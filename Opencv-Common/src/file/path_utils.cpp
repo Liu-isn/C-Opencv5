@@ -1,126 +1,150 @@
 #include "common/path_utils.h"
 
-// windows.h 提供路径相关的 Windows API。
-// 必须定义以下宏，防止 windows.h 的宏污染其他头文件：
-//   NOMINMAX            —— 防止定义 min/max 宏（与 std::min/std::max 冲突）
-//   WIN32_LEAN_AND_MEAN —— 精简 windows.h，减少编译时间
-#define WIN32_LEAN_AND_MEAN
-#define NOMINMAX
-#include <windows.h>// 必须包含此头文件以支持 WIN32_FILE_ATTRIBUTE_DATA
-#include <sstream>    // 必需：为了使用 std::ostringstream
-#include <iomanip>    // 必需：为了使用 std::fixed 和 std::setprecision
-#include <string>    
+#define WIN32_LEAN_AND_MEAN   // 精简 windows.h，加快编译
+#define NOMINMAX              // 防止 min/max 宏与 std::min/std::max 冲突
+#include <windows.h>	// 必须包含此头文件以支持 WIN32_FILE_ATTRIBUTE_DATA
+#include <sstream>		// 必需：为了使用 std::ostringstream
+#include <string>   
+#include <vector> 
+#include <filesystem> 
 
-namespace common 
+using namespace std;
+using namespace std::filesystem;
+
+namespace common
 {
-	std::string exeDirectory()
+	string exeDirectory()
 	{
-		// GetModuleFileNameA：返回当前进程 exe 的完整路径（ANSI 窄字符版）。
-		//   参数 1: nullptr 表示取"当前进程"的 exe
-		//   参数 2: 接收路径的缓冲区
-		//   参数 3: 缓冲区大小（字符数）
-		//
-		// 注意：MAX_PATH = 260，超长路径会被截断。学习项目可接受；
-		//       若将来要支持超长路径，需改用 GetModuleFileNameW + 动态缓冲区。
-		char buffer[MAX_PATH] = {};
-		GetModuleFileNameA(nullptr, buffer, MAX_PATH);
+		// 1. 使用动态缓冲区循环获取宽路径，防止路径超长截断（吸收 AI 的严谨设计）
+		DWORD size = 1024;
+		wstring fullPathW;// 用宽字符串 解决 中文路径乱码问题
 
-		const std::string fullPath(buffer);
-
-		// 去掉最后的文件名，得到 exe 所在目录（不含末尾分隔符）
-		const size_t pos = fullPath.find_last_of("\\/");
-		if (pos == std::string::npos)
+		// 用循环动态扩容的方式去问系统要
+		while (true)
 		{
-			return ".";   // 异常兜底：找不到分隔符时退回当前目录
+			vector<wchar_t> buffer(size);
+			DWORD copied = GetModuleFileNameW(nullptr, buffer.data(), size);
+
+			if (copied == 0)
+			{
+				// 获取失败：返回空串，并可按需记录日志（如：GetLastError()）
+				// std::cerr << "GetModuleFileNameW failed, error: " << GetLastError() << std::endl;
+				return "";
+			}
+
+			if (copied < size)
+			{
+				fullPathW.assign(buffer.data(), copied);
+				break;
+			}
+
+			// 防御性上限检查，防止无限循环
+			if (size > 65536)
+			{
+				// std::cerr << "Exe path is abnormally too long." << std::endl;
+				return "";
+			}
+			size *= 2;
 		}
-		return fullPath.substr(0, pos);
+
+		// 2. 利用 C++17 std::filesystem 处理路径
+		path exePath(fullPathW);
+
+		// 3. 获取父目录，并转为 std::string (使用系统 ANSI 代码页（中文系统为 GBK），全链路窄字符串需保持同一种编码，切勿混入 UTF-8`。)
+		path parentPath = exePath.parent_path();
+
+		if (parentPath.empty())
+		{
+			return "";
+		}
+
+		return parentPath.string();
 	}
 
-	std::string imageDirectory()
+	string imageDirectory()
 	{
-		return joinPath(joinPath(exeDirectory(), "data"), "img");
+		string exeDir = exeDirectory();
+		if (exeDir.empty()) 
+			return ""; // 如果 exe 目录获取失败，直接返回空
+
+		return joinPath(joinPath(exeDir, "data"), "img");
 	}
 
-	std::string outputDirectory()
+	string outputDirectory()
 	{
-		return joinPath(exeDirectory(), "output");
+		string exeDir = exeDirectory();
+		if (exeDir.empty())
+			return ""; // 如果 exe 目录获取失败，直接返回空
+
+		return joinPath(exeDir, "output");
 	}
 
-	std::string joinPath(const std::string& dir, const std::string& name)
+	string joinPath(const string& dir, const string& name)
+	{
+		// 在 C++17 中，std::filesystem::path 重载了 / 运算符，它会自动处理所有系统的斜杠问题
+		return (path(dir) / name).string();
+	}
+
+	bool pathExists(const string& filepath)
+	{
+		if (filepath.empty())
+			return false;
+		try
+		{
+			return std::filesystem::exists(path(filepath));
+		}
+		catch (...)
+		{
+			return false;
+		}
+	}
+
+	bool createDirectories(const string& dir)
 	{
 		if (dir.empty())
 		{
-			return name;
-		}
-		const char last = dir.back();
-		if (last == '\\' || last == '/')
-		{
-			return dir + name;   // dir 已带分隔符，直接拼接
-		}
-		return dir + "\\" + name;
-	}
-
-	bool pathExists(const std::string& path)
-	{
-		// GetFileAttributesA 对不存在的路径返回 INVALID_FILE_ATTRIBUTES。
-		// 文件和目录都适用。
-		const DWORD attrs = GetFileAttributesA(path.c_str());
-		return attrs != INVALID_FILE_ATTRIBUTES;
-	}
-
-	void createDirectories(const std::string& dir)
-	{
-		// 逐级创建目录：
-		//   D:\a\b\c → 依次尝试创建 D:\a、D:\a\b、D:\a\b\c
-		// CreateDirectoryA 只能创建"最后一级"，所以逐级调用；
-		// 已存在的中间级会返回失败（ERROR_ALREADY_EXISTS），直接忽略。
-		std::string path = dir;
-
-		// 去掉末尾分隔符，统一处理
-		while (!path.empty() && (path.back() == '\\' || path.back() == '/'))
-		{
-			path.pop_back();
-		}
-		if (path.empty())
-		{
-			return;
+			return false;
 		}
 
-		for (size_t i = 1; i <= path.size(); ++i)
+		try
 		{
-			if (i == path.size() || path[i] == '\\' || path[i] == '/')
-			{
-				const std::string prefix = path.substr(0, i);
+			// path 从窄字符串构造时按系统 ANSI 代码页（中文系统为 GBK）解析，
+			// 全链路窄字符串保持同一种编码，切勿混入 UTF-8
+			path p(dir);
 
-				// 跳过盘符根目录（如 "D:"），无需创建
-				if (prefix.size() == 2 && prefix[1] == ':')
-				{
-					continue;
-				}
-				CreateDirectoryA(prefix.c_str(), nullptr);
-			}
+			// 核心函数：递归创建所有不存在的父目录
+			// 注意：不要直接把它的返回值当成函数返回值！
+			std::filesystem::create_directories(p);
+
+			// 只要没有抛出异常，就说明文件夹最终可用（无论是刚创建的，还是本来就存在的）
+			return true;
+		}
+		catch (const filesystem_error& e)
+		{
+			// 如果遇到权限不足、路径非法等真实错误，会在这里被捕获
+			// 建议在这里打个日志，方便排查：std::cout << e.what() << std::endl;
+			return false;
 		}
 	}
 
 	// ============================================================
 	// 辅助函数：获取文件大小（字节）
 	// ============================================================
-	// Windows API: GetFileAttributesExA
-	// 用于对比不同格式/参数下的输出文件体积
-	// ============================================================
-	unsigned long long getFileSize(const std::string& path)
+	unsigned long long getFileSize(const string& filepath)
 	{
-		WIN32_FILE_ATTRIBUTE_DATA fad = {};
-		if (GetFileAttributesExA(path.c_str(), GetFileExInfoStandard, &fad))
+		if (filepath.empty()) return 0;
+
+		try 
 		{
-			// 文件大小 = 高 32 位 << 32 | 低 32 位
-			return (static_cast<unsigned long long>(fad.nFileSizeHigh) << 32)
-				| fad.nFileSizeLow;
+			return std::filesystem::file_size(path(filepath));
 		}
-		return 0;
+		catch (...) 
+		{
+			return 0;
+		}
 	}
 
-	std::string formatFileSize(unsigned long long bytes)
+	string formatFileSize(unsigned long long bytes)
 	{
 		if (bytes < 1024)
 		{
@@ -148,6 +172,5 @@ namespace common
 		oss << std::fixed << std::setprecision(2) << size << " " << unit;
 		return oss.str();
 	}
-
 
 } // namespace common

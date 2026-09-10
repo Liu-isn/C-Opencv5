@@ -24,6 +24,9 @@
     <ClInclude Include="include\common\path_utils.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="tests\demos\test_api.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
@@ -33,6 +36,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\file\path_utils.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="tests\demos\test_path_utils.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="tests\main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="tests\demos\test_mat_info.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -40,13 +40,13 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -71,11 +71,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)include;F:\Mygit\Opencv5\opencv\build\include\opencv2;F:\Mygit\Opencv5\opencv\build\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)tests;$(ProjectDir)include;F:\Mygit\Opencv5\opencv\build\include\opencv2;F:\Mygit\Opencv5\opencv\build\include;$(IncludePath)</IncludePath>
     <LibraryPath>F:\Mygit\Opencv5\opencv\build\x64\vc16\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)include;F:\Mygit\Opencv5\opencv\build\include;F:\Mygit\Opencv5\opencv\build\include\opencv2;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)tests;$(ProjectDir)include;F:\Mygit\Opencv5\opencv\build\include;F:\Mygit\Opencv5\opencv\build\include\opencv2;$(IncludePath)</IncludePath>
     <LibraryPath>F:\Mygit\Opencv5\opencv\build\x64\vc16\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -110,6 +110,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -125,6 +126,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -136,6 +138,7 @@
     <ClInclude Include="include\common\common_api.h.h" />
     <ClInclude Include="include\common\mat_info.h" />
     <ClInclude Include="include\common\path_utils.h" />
+    <ClInclude Include="tests\demos\test_api.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
@@ -143,6 +146,9 @@
   <ItemGroup>
     <ClCompile Include="src\file\path_utils.cpp" />
     <ClCompile Include="src\math\mat_info.cpp" />
+    <ClCompile Include="tests\demos\test_mat_info.cpp" />
+    <ClCompile Include="tests\demos\test_path_utils.cpp" />
+    <ClCompile Include="tests\main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

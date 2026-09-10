@@ -1,8 +1,11 @@
 #include "common/mat_info.h"
 
+using namespace std;
+using namespace cv;
+
 namespace common
 {
-	void printImageInfo(const std::string& label, const cv::Mat& img)
+	void printImageInfo(const string& label, const Mat& img)
 	{
 		std::cout << label << ":\n";
 		std::cout << "  ³ß´ç (WxH) : " << img.cols << " x " << img.rows << "\n";
