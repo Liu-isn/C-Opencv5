@@ -71,11 +71,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)Opencv-Common/include;F:\Mygit\Opencv5\opencv\build\include;F:\Mygit\Opencv5\opencv\build\include\opencv2;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(SolutionDir)Opencv-Common/include;F:\Mygit\Opencv5\opencv\build\include;F:\Mygit\Opencv5\opencv\build\include\opencv2;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)x64/Debug;F:\Mygit\Opencv5\opencv\build\x64\vc16\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)Opencv-Common/include;F:\Mygit\Opencv5\opencv\build\include;F:\Mygit\Opencv5\opencv\build\include\opencv2;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(SolutionDir)Opencv-Common/include;F:\Mygit\Opencv5\opencv\build\include;F:\Mygit\Opencv5\opencv\build\include\opencv2;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)x64/Release;F:\Mygit\Opencv5\opencv\build\x64\vc16\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -134,6 +134,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\03_highui\01_read_image.cpp" />
+    <ClCompile Include="src\common\demo_utils.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\03_highui\01_read_image.h" />
+    <ClInclude Include="src\common\demo_utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
