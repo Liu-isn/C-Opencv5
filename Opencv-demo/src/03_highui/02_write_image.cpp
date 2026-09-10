@@ -205,6 +205,12 @@ int demo_WriteImage()
 
 	// ×¼±¸Í¼Ïñ
 	const string imgPath = ensureTestImage();
+	if (imgPath.empty())
+	{
+		cerr << "[´íÎó] »ñÈ¡²âÊÔÍ¼ÏñÊ§°Ü\n";
+		return -1;
+	}
+
 	Mat testImg = imread(imgPath, IMREAD_UNCHANGED);
 	if (testImg.empty())
 	{
