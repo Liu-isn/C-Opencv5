@@ -3,18 +3,32 @@
 #include <iostream>
 #include <string>
 
-#define READ_IMAGE_DEMO  1
+//#define READ_IMAGE_DEMO  
+#define WRITE_IMAGE_DEMO 
 
 #include "src/03_highui/01_read_image.h"
+#include "src/03_highui/02_write_image.h"
 
 int main()
 {
+	static int result = 0;
 #ifdef READ_IMAGE_DEMO
 
-	int result = demo_ReadImage();
+	result = demo_ReadImage();
 	if (result != 0)
 	{
 		std::cerr << "[´íÎó] demo_ReadImage() Ö´ÐÐÊ§°Ü£¬·µ»ØÖµ: " << result << "\n";
+		return -1;
+	}
+
+#endif
+
+#ifdef WRITE_IMAGE_DEMO
+
+	result = demo_WriteImage();
+	if (result != 0)
+	{
+		std::cerr << "[´íÎó] demo_WriteImage() Ö´ÐÐÊ§°Ü£¬·µ»ØÖµ: " << result << "\n";
 		return -1;
 	}
 

@@ -3,7 +3,6 @@
 // 
 //   readImageModes()  —— Step 1: 三种模式读取 + empty() 检查
 //   displayImages()   —— Step 2: namedWindow + imshow + waitKey
-//   runReadImageExperiment() —— 实验流程编排
 // ============================================================
 
 #include "01_read_image.h"
