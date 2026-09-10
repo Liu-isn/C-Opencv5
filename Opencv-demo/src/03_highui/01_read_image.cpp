@@ -79,6 +79,7 @@ int demo_ReadImage()
 	const string imgPath = ensureTestImage();
 	if (imgPath.empty())
 	{
+		cerr << "[´íÎó] Éú³É/»ñÈ¡²âÊÔÍ¼ÏñÊ§°Ü\n";
 		return -1;
 	}
 
@@ -86,6 +87,7 @@ int demo_ReadImage()
 	Mat img_color, img_grayscale, img_unchanged;
 	if (!readImageModes(imgPath, img_color, img_grayscale, img_unchanged))
 	{
+		cerr << "[´íÎó] readImageModes Ö´ÐÐÊ§°Ü\n";
 		return -1;
 	}
 
