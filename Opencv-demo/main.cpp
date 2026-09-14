@@ -4,10 +4,12 @@
 #include <string>
 
 //#define READ_IMAGE_DEMO  
-#define WRITE_IMAGE_DEMO 
+//#define WRITE_IMAGE_DEMO 
+#define RESIZE_IMAGE_DEMO 
 
 #include "src/03_highui/01_read_image.h"
 #include "src/03_highui/02_write_image.h"
+#include "src/02_imgproc/01_resize_image.h"
 
 int main()
 {
@@ -29,6 +31,17 @@ int main()
 	if (result != 0)
 	{
 		std::cerr << "[´íÎó] demo_WriteImage() Ö´ÐÐÊ§°Ü£¬·µ»ØÖµ: " << result << "\n";
+		return -1;
+	}
+
+#endif
+
+#ifdef RESIZE_IMAGE_DEMO
+
+	result = demo_ResizeImage();
+	if(!result)
+	{
+		std::cerr << "[´íÎó] demo_ResizeImage() Ö´ÐÐÊ§°Ü£¬·µ»ØÖµ: " << result << "\n";
 		return -1;
 	}
 

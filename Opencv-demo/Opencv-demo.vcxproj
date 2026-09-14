@@ -134,6 +134,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\02_imgproc\01_resize_image.cpp" />
     <ClCompile Include="src\03_highui\01_read_image.cpp" />
     <ClCompile Include="src\03_highui\02_write_image.cpp" />
     <ClCompile Include="src\common\demo_utils.cpp" />
@@ -142,6 +143,7 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\02_imgproc\01_resize_image.h" />
     <ClInclude Include="src\03_highui\01_read_image.h" />
     <ClInclude Include="src\03_highui\02_write_image.h" />
     <ClInclude Include="src\common\demo_utils.h" />
