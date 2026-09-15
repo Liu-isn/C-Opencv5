@@ -30,6 +30,12 @@
     <ClCompile Include="src\02_imgproc\01_resize_image.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\01_core_basic\01_crop_image.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\02_imgproc\02_affine_transform.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
@@ -45,6 +51,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\02_imgproc\01_resize_image.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\01_core_basic\01_crop_image.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\02_imgproc\02_affine_transform.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

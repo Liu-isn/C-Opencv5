@@ -5,11 +5,15 @@
 
 //#define READ_IMAGE_DEMO  
 //#define WRITE_IMAGE_DEMO 
-#define RESIZE_IMAGE_DEMO 
+//#define RESIZE_IMAGE_DEMO 
+//#define CROP_IMAGE_DEMO 
+#define AFFINE_TRANSFORM_DEMO 
 
 #include "src/03_highui/01_read_image.h"
 #include "src/03_highui/02_write_image.h"
 #include "src/02_imgproc/01_resize_image.h"
+#include "src/02_imgproc/02_affine_transform.h"
+#include "src/01_core_basic/01_crop_image.h"
 
 int main()
 {
@@ -42,6 +46,28 @@ int main()
 	if(!result)
 	{
 		std::cerr << "[´íÎó] demo_ResizeImage() Ö´ÐÐÊ§°Ü£¬·µ»ØÖµ: " << result << "\n";
+		return -1;
+	}
+
+#endif
+
+#ifdef CROP_IMAGE_DEMO
+
+	result = demo_CropImage();
+	if (!result)
+	{
+		std::cerr << "[´íÎó] demo_CropImage() Ö´ÐÐÊ§°Ü£¬·µ»ØÖµ: " << result << "\n";
+		return -1;
+	}
+
+#endif
+
+#ifdef AFFINE_TRANSFORM_DEMO
+
+	result = demo_RotateTranslate();
+	if (!result)
+	{
+		std::cerr << "[´íÎó] demo_RotateTranslate() Ö´ÐÐÊ§°Ü£¬·µ»ØÖµ: " << result << "\n";
 		return -1;
 	}
 
